@@ -29,13 +29,13 @@ jobs:
 
       - name: Deploy
         run: |
-          docker stop swecc-redis-instance || true
-          docker rm swecc-redis-instance || true
+          docker stop swecc-rabbit-instance || true
+          docker rm swecc-rabbit-instance || true
 
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:latest
 
           docker run -d \
-            --name swecc-redis-instance \
+            --name swecc-rabbit-instance \
             --network swag-network \
             -p 6379:6379 \
             --restart unless-stopped \
