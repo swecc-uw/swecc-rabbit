@@ -24,8 +24,8 @@ jobs:
       - name: Build and push
         run: |
           docker pull rabbitmq:3-management
-          docker tag rabbitmq:3-management ${{ secrets.DOCKERHUB_USERNAME }}/rabbitmq-custom:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/rabbitmq-custom:latest
+          docker tag rabbitmq:3-management ${{ secrets.DOCKERHUB_USERNAME }}/rabbitmq:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/rabbitmq:latest
 
       - name: Deploy
         run: |
