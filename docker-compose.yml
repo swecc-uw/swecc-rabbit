@@ -1,6 +1,6 @@
 services:
   rabbitmq:
-    image: rabbitmq:3-management
+    image: swecc/swecc-rabbit:latest
     container_name: rabbitmq
     ports:
       - 5672:5672
