@@ -34,7 +34,7 @@ jobs:
           docker stop swecc-rabbit-instance || true
           docker rm swecc-rabbit-instance || true
 
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbitmq:latest
 
           docker run -d \
             --name swecc-rabbit-instance \
@@ -43,4 +43,4 @@ jobs:
             -p 15672:15672 \
             -v swecc-rabbit-data:/var/lib/rabbitmq \
             --restart unless-stopped \
-            ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbitmq:latest
