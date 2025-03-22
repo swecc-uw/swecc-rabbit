@@ -1,0 +1,41 @@
+name: Push-to-EC2
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on:
+      group: EC2
+      labels: [self-hosted, deploy]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_SWECC_RABBIT_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/swecc-redis:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/swecc-redis:${{ github.sha }}
+      - name: Deploy
+        run: |
+          docker stop swecc-redis-instance || true
+          docker rm swecc-redis-instance || true
+
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/swecc-redis:latest
+
+          docker run -d \
+            --name swecc-redis-instance \
+            --network swag-network \
+            -p 6379:6379 \
+            --restart unless-stopped \
+            ${{ secrets.DOCKERHUB_USERNAME }}/swecc-redis:latest
