@@ -4,10 +4,8 @@ on:
     branches:
       - main
 jobs:
-  build:
-    runs-on:
-      group: EC2
-      labels: [self-hosted, deploy]
+  push_to_dockerhub:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -29,16 +27,23 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:latest 
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:${{ github.sha }}
 
+  deploy_to_swarm:
+    needs: push_to_dockerhub
+    runs-on:
+      group: EC2
+      labels: [self-hosted, deploy]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Deploy
         run: |
-          docker stop swecc-rabbit-instance || true
-          docker rm swecc-rabbit-instance || true
+          docker service rm rabbit || true
 
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:latest
-
-          docker run -d \
-            --name swecc-rabbit-instance \
-            --network swag-network \
-            -v swecc-rabbit-data:/var/lib/rabbitmq \
-            --restart unless-stopped \
+          docker service create \
+            --name rabbit \
+            --network prod_swecc-network \
+            --mount type=volume,src=/var/lib/rabbitmq,dst=rabbitmq_data \
+            --replicas 1 \
+            --restart-condition any\
             ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:latest
