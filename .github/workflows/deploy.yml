@@ -43,7 +43,7 @@ jobs:
           docker service create \
             --name rabbit \
             --network prod_swecc-network \
-            --mount type=volume,src=/var/lib/rabbitmq,dst=rabbitmq_data \
+            --mount type=volume,src=rabbitmq_data,dst=/var/lib/rabbitmq\
             --replicas 1 \
             --restart-condition any\
             ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:latest
