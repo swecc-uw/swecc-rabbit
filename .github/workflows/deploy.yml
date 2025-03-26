@@ -38,10 +38,10 @@ jobs:
 
       - name: Deploy
         run: |
-          docker service rm rabbit || true
+          docker service rm rabbitmq-host || true
 
           docker service create \
-            --name rabbit \
+            --name rabbitmq-host \
             --network prod_swecc-network \
             --mount type=volume,src=rabbitmq_data,dst=/var/lib/rabbitmq\
             --replicas 1 \
