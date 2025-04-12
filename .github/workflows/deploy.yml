@@ -47,4 +47,5 @@ jobs:
             --mount type=volume,src=rabbitmq_data,dst=/var/lib/rabbitmq\
             --replicas 1 \
             --restart-condition any\
+            -p 5672:5672\
             ${{ secrets.DOCKERHUB_USERNAME }}/swecc-rabbit:latest
