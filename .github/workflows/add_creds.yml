@@ -11,9 +11,13 @@ on:
 
 jobs:
   add_creds:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: EC2
+      labels: [self-hosted, deploy]
     steps:
-      - name: Test parameters
+      - name: Register User in RabbitMQ
         run: |
-          echo "Username: ${{ github.event.inputs.username }}"
-          echo "Password: ${{ github.event.inputs.password }}"
+          docker exec -it ${{ secrets.SERVICE_NAME }} rabbitmqctl add_user ${{ github.event.inputs.username }} ${{ github.event.inputs.password }}
+          docker exec -it ${{ secrets.SERVICE_NAME }} rabbitmqctl set_user_tags ${{ github.event.inputs.username }} administrator
+          docker exec -it ${{ secrets.SERVICE_NAME }} rabbitmqctl set_permissions_globally ${{ github.event.inputs.username }} ".*" ".*" ".*"
+          docker exec -it ${{secrets.SERVICE_NAME }} rabbitmqctl list_users

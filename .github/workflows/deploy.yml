@@ -39,10 +39,10 @@ jobs:
 
       - name: Deploy
         run: |
-          docker service rm rabbitmq-host || true
+          docker service rm ${{ secrets.SERVICE_NAME }} | true
 
           docker service create \
-            --name rabbitmq-host \
+            --name ${{ secrets.SERVICE_NAME }} \
             --network prod_swecc-network \
             --mount type=volume,src=rabbitmq_data,dst=/var/lib/rabbitmq\
             --replicas 1 \
