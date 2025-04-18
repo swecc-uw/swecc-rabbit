@@ -15,9 +15,15 @@ jobs:
       group: EC2
       labels: [self-hosted, deploy]
     steps:
+      - name: Get container id
+        id: get_container_id
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter "name=${{ secrets.SERVICE_NAME }}")
+          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+
       - name: Register User in RabbitMQ
         run: |
-          docker exec -it ${{ secrets.SERVICE_NAME }} rabbitmqctl add_user ${{ github.event.inputs.username }} ${{ github.event.inputs.password }}
-          docker exec -it ${{ secrets.SERVICE_NAME }} rabbitmqctl set_user_tags ${{ github.event.inputs.username }} administrator
-          docker exec -it ${{ secrets.SERVICE_NAME }} rabbitmqctl set_permissions_globally ${{ github.event.inputs.username }} ".*" ".*" ".*"
-          docker exec -it ${{secrets.SERVICE_NAME }} rabbitmqctl list_users
+          docker exec -it ${{ env.CONTAINER_ID }} rabbitmqctl add_user ${{ github.event.inputs.username }} ${{ github.event.inputs.password }}
+          docker exec -it ${{ env.CONTAINER_ID }} rabbitmqctl set_user_tags ${{ github.event.inputs.username }} administrator
+          docker exec -it ${{ env.CONTAINER_ID }} rabbitmqctl set_permissions_globally ${{ github.event.inputs.username }} ".*" ".*" ".*"
+          docker exec -it ${{ env.CONTAINER_ID }} rabbitmqctl list_users
