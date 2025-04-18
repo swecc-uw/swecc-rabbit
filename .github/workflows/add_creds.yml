@@ -1,0 +1,19 @@
+name: Add Credentials
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'Username for RabbitMQ'
+        required: true
+      password:
+        description: 'Password for RabbitMQ'
+        required: true
+
+jobs:
+  add_creds:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test parameters
+        run: |
+          echo "Username: ${{ github.event.inputs.username }}"
+          echo "Password: ${{ github.event.inputs.password }}"
