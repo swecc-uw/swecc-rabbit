@@ -23,7 +23,7 @@ jobs:
 
       - name: Register User in RabbitMQ
         run: |
-          docker exec -it ${{ env.CONTAINER_ID }} rabbitmqctl add_user ${{ github.event.inputs.username }} ${{ github.event.inputs.password }}
-          docker exec -it ${{ env.CONTAINER_ID }} rabbitmqctl set_user_tags ${{ github.event.inputs.username }} administrator
-          docker exec -it ${{ env.CONTAINER_ID }} rabbitmqctl set_permissions_globally ${{ github.event.inputs.username }} ".*" ".*" ".*"
-          docker exec -it ${{ env.CONTAINER_ID }} rabbitmqctl list_users
+          docker exec ${{ env.CONTAINER_ID }} rabbitmqctl add_user ${{ github.event.inputs.username }} ${{ github.event.inputs.password }}
+          docker exec ${{ env.CONTAINER_ID }} rabbitmqctl set_user_tags ${{ github.event.inputs.username }} administrator
+          docker exec ${{ env.CONTAINER_ID }} rabbitmqctl set_permissions_globally ${{ github.event.inputs.username }} ".*" ".*" ".*"
+          docker exec ${{ env.CONTAINER_ID }} rabbitmqctl list_users
